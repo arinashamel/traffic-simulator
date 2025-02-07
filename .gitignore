@@ -1,0 +1,9 @@
+# Maven target folder
+target/
+
+# Maven dependency cache
+.m2/
+
+# IDE-specific files (Eclipse, IntelliJ, etc.)
+.idea/
+*.iml
