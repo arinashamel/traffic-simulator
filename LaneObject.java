@@ -1,4 +1,7 @@
+import java.util.ArrayList;
+
 public class LaneObject {
+    byte directionComingIn;
     MoveableObject[][] lanes;
     byte[] laneTypes;
     Boolean leftDrive;
@@ -39,6 +42,7 @@ public class LaneObject {
         }
         else{// spawning a car
             MoveableObject temp = new MoveableObject();
+            byte startLane = findStartingLane(endLane);
 
         }
         return false;
@@ -50,16 +54,48 @@ public class LaneObject {
         //identify which lanes we can go in to start
         //identify which of those lanes are emptiest
         //if one no need to check
-        byte[] viableLanes = findViableLanes(endLane);
-        if(viableLanes.length==0){
+        ArrayList<Byte> viableLanes = findViableLanes(endLane);
+        byte startingLane= -1;
+        if(viableLanes.size() ==0){
 
         }
-        else if(viableLanes.length==1){
+        else if(viableLanes.size() ==1){
 
         }
         else{// 2 or more lanes available
             
         }
+
+        if(startingLane ==-1){
+            // error
+        }
+        else{
+            return startingLane;
+        }
+        
+    }
+    private ArrayList<Byte> findViableLanes(byte endLane){
+        ArrayList<Byte> viableLanes = new ArrayList<>();
+        for(int i = 0; i < laneTypes.length; i++){
+            switch(endLane){
+                case 0:
+                    // want to go north, identify lanes going north relative to the arm direction, i.e., if we comi
+                    break;
+                case 1:
+                    // want to go east, ...
+                    break;
+                case 2:
+                    // want to go south, ...
+                    break;
+                case 3:
+                    // want to go west, ...
+                    break;
+                default:
+                    // erroneous direction to which we want to go
+                    break;
+            }
+        }
+        return viableLanes.toArray();
     }
 
     
