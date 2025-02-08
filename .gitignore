@@ -7,3 +7,7 @@ target/
 # IDE-specific files (Eclipse, IntelliJ, etc.)
 .idea/
 *.iml
+
+
+#jar
+/libs/*.jar

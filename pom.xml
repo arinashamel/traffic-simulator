@@ -18,6 +18,13 @@
         <version>5.9.2</version>
         <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>com.jdistlib</groupId>
+        <artifactId>jdistlib</artifactId>
+        <version>0.4.5</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/libs/jdistlib-0.4.5-bin.jar</systemPath>
+    </dependency>
   </dependencies>
 
   <build>
