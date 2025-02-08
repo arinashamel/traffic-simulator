@@ -6,7 +6,7 @@
 // import isn't working
 // import org.apache.commons.collections.buffer.BoundedCircularFifoBuffer;
 public class Junction {
-    private Arm[] arms;
+    // private Arm[] arms;
     private MoveableObject[][] cArea; //** Central junction area */
     private short nextSpawnID;
 
@@ -18,9 +18,9 @@ public class Junction {
     // private <int, long, long> simulationDuration;
     // ... cont with simulation parameters
 
-    public Arm[] getArms(){
-        return arms;
-    }
+    // public Arm[] getArms(){
+    //     return arms;
+    // }
     // don't need a setter for things like arms do we?
 
     public MoveableObject[][] getCArea(){
