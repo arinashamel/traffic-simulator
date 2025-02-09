@@ -7,6 +7,7 @@ import java.util.stream.*;
 public class LaneObject {
     byte directionComingIn;
     MoveableObject[][] lanes;
+    ArrayList<PedestrianGroup> pedestrianGroups;
     ArrayList<Byte> laneTypes;
     Boolean leftDrive;
 
@@ -37,129 +38,157 @@ public class LaneObject {
     private static final byte ERROR_CODE = -111;
     private static final byte ALTERNATIVE_SOLUTION = -51;
 
-    public LaneObject(ArrayList<Byte> laneTypes) {
+    public LaneObject(ArrayList<Byte> laneTypes){
         this.laneTypes = laneTypes;
         lanes = new MoveableObject[laneTypes.size()][LANE_LENGTH];
 
     }
 
-    public Boolean spawnVehicle(int id, byte endArm, Boolean bus, short ghgEmissions) {
-        if (bus) { // spawning a bus
+
+
+
+// ## START Vehicle Movement (one time step) ##
+
+// ## END Vehicle Movement (one time step) ##
+
+// ## START Spawning Vehicles ##
+    public Boolean spawnVehicle(int id, byte endArm, Boolean bus, short ghgEmissions){
+        if(bus){ // spawning a bus
             // do we need this, or can we spawn buses anyway even if no bus lane
-            if (armContainsBusLane()) {
-
-            } else {
-
+            if(armContainsBusLane()){
+                
             }
-        } else {// spawning a car
+            else{
+                
+            }
+        }
+        else{// spawning a car
             MoveableObject temp = new MoveableObject();
             byte spawnLane = findStartingLane(endArm);
             Vehicle v = new Vehicle(id, LocalDateTime.now(), directionComingIn, endArm, spawnLane, bus, ghgEmissions);
-            lanes[spawnLane][LANE_LENGTH - 1] = v;
+            lanes[spawnLane][LANE_LENGTH-1] = v;
         }
         return false;
     }
-
-    public Boolean spawnPedestrianGroup(int id, byte laneBeingCrossed) {
+    private Boolean armContainsBusLane(){
         return false;
     }
-
-    private Boolean armContainsBusLane() {
-        return false;
-    }
-
-    private byte findStartingLane(byte endArm) throws NullPointerException {
-        // identify which lanes we can go in to start
-        // identify which of those lanes are emptiest
-        // if one no need to check
-        try {
+    private byte findStartingLane(byte endArm) throws NullPointerException{ 
+        //identify which lanes we can go in to start
+        //identify which of those lanes are emptiest
+        //if one no need to check
+        try{
             ArrayList<Byte> viableLanes = findViableLanes(endArm);
-            byte startingLane = ERROR_CODE;
-            if (viableLanes.size() == 0) {
+            byte startingLane= ERROR_CODE;
+            if(viableLanes.size() ==0){
                 // error, we have no viable lanes for the direction we want to travel in
                 throw new NullPointerException();
-            } else if (viableLanes.size() == 1) {
+            }
+            else if(viableLanes.size() ==1){
                 return viableLanes.get(0);
-            } else {// 2 or more lanes available
+            }
+            else{// 2 or more lanes available
                 return findEmptierLane(viableLanes);
             }
-        } catch (NullPointerException e) {
+        }
+        catch(NullPointerException e){
             e.printStackTrace();
-            // how do we handle this error
+            //how do we handle this error
             return 0;
         }
     }
-
-    private ArrayList<Byte> findViableLanes(byte endArm) {
+    private ArrayList<Byte> findViableLanes(byte endArm){
         ArrayList<Byte> viableLanes = new ArrayList<>();
         byte turnVal = (byte) (directionComingIn - endArm); // value will never be outside range -3<=val<=3
 
         ArrayList<Byte> temp = new ArrayList<>();
 
-        if (Math.abs(turnVal) == 2) {// want to go straight
+
+        if(Math.abs(turnVal)==2){// want to go straight
 
             // numerical values for which a lane is acceptable: 4,7,8,9
-            for (byte i = 0; i < laneTypes.size(); i++) {
+            for(byte i = 0; i < laneTypes.size(); i++){
                 byte v = laneTypes.get(i);
-                if (v == 4 || v == 7 || v == 8 || v == 9) { // can we generalise this feature
+                if(v == 4 || v == 7 || v == 8 || v == 9){ // can we generalise this feature
                     viableLanes.add(v);
                 }
             }
-
-        } else if (turnVal == 1 || turnVal == -3) {// want to turn right
+            
+        }
+        else if(turnVal == 1 || turnVal == -3){// want to turn right
 
             // numerical values for which a lane is acceptable: 6,8,9
 
-            for (byte i = 0; i < laneTypes.size(); i++) {
+            for(byte i = 0; i < laneTypes.size(); i++){
                 byte v = laneTypes.get(i);
-                if (v == 6 || v == 8 || v == 9) { // can we generalise this feature
+                if(v == 6 || v == 8 || v == 9){ // can we generalise this feature
                     viableLanes.add(v);
                 }
             }
-        } else if (turnVal == -1 || turnVal == 3) {// want to turn left
+        }
+        else if(turnVal == -1 || turnVal == 3){// want to turn left
 
             // numerical values for which a lane is acceptable: 5,7,9
 
-            for (byte i = 0; i < laneTypes.size(); i++) {
+            for(byte i = 0; i < laneTypes.size(); i++){
                 byte v = laneTypes.get(i);
-                if (v == 5 || v == 7 || v == 9) { // can we generalise this feature
+                if(v == 5 || v == 7 || v == 9){ // can we generalise this feature
                     viableLanes.add(v);
                 }
             }
-        } else {
+        }
+        else{
             // error
         }
         return viableLanes;
     }
-
-    private byte findEmptierLane(ArrayList<Byte> viableLanes) {
+    private byte findEmptierLane(ArrayList<Byte> viableLanes){
 
         byte emptiestLane = ERROR_CODE;
         byte minCarsFound = 101;
 
-        for (byte i = 0; i < viableLanes.size(); i++) {
+        for(byte i = 0; i < viableLanes.size(); i++){
             // find which lane has less vehicles, return that one
             byte carsCount = 0;
-            for (byte j = 0; j < LANE_LENGTH; j++) {
-                if (lanes[i][j] != null) { // need to set empty cells to null
+            for(byte j = 0; j < LANE_LENGTH; j++){
+                if(lanes[i][j] != null){ // need to set empty cells to null
                     carsCount++;
                 }
             }
-            if (carsCount < minCarsFound) {
+            if(carsCount < minCarsFound){
                 emptiestLane = i;
             }
         }
         return emptiestLane;
     }
-
-    private byte nextAvailableSlot(byte lane) { // delete if not used by the end
-        for (byte i = 0; i < LANE_LENGTH; i++) {
-            if (lanes[lane][i] == null) {
+    private byte nextAvailableSlot(byte lane){ // delete if not used by the end
+        for(byte i = 0; i < LANE_LENGTH; i++){
+            if(lanes[lane][i]==null){
                 return i;
             }
         }
         return ALTERNATIVE_SOLUTION;
     }
+// ## END Spawning Vehicles ##
+
+// ## START Spawning Pedestrians ##
+public Boolean spawnPedestrianGroup(int id, byte numPeople){ 
+    PedestrianGroup pg = new PedestrianGroup(id, LocalDateTime.now(), numPeople);
+    pedestrianGroups.add(pg);
+    return true;
+}
+// ## END Spawning Pedestrians ##
+
+// ## START Pedestrian Movement ##
+public Boolean movePedestrians(){
+    // if cars stop at red light, they will be at row 1, not 0, 0 is the pedestrian crossing
+    for(PedestrianGroup item : pedestrianGroups){
+        // end the waiting time somehow without adding too much overhead
+    }
+    return false;
+    
+}
+// ## END Pedestrian Movement ##
 
     public static byte getLaneLength() {
         return LANE_LENGTH;
