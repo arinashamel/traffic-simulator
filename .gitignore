@@ -9,5 +9,3 @@ target/
 *.iml
 
 
-#jar
-/libs/*.jar
