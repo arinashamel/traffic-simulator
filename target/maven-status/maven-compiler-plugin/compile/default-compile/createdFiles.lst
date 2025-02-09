@@ -1,1 +1,7 @@
+Vehicle.class
+SimulationManager.class
 com\example\App.class
+LaneObject.class
+PedestrianGroup.class
+MoveableObject.class
+Junction.class
