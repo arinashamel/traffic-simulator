@@ -1,3 +1,4 @@
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.stream.*;
 public class LaneObject {
     byte directionComingIn;
     MoveableObject[][] lanes;
+    ArrayList<PedestrianGroup> pedestrianGroups;
     ArrayList<Byte> laneTypes;
     Boolean leftDrive;
 
@@ -44,6 +46,13 @@ public class LaneObject {
     }
 
 
+
+
+// ## START Vehicle Movement (one time step) ##
+
+// ## END Vehicle Movement (one time step) ##
+
+// ## START Spawning Vehicles ##
     public Boolean spawnVehicle(int id, byte endArm, Boolean bus, short ghgEmissions){
         if(bus){ // spawning a bus
             // do we need this, or can we spawn buses anyway even if no bus lane
@@ -60,9 +69,6 @@ public class LaneObject {
             Vehicle v = new Vehicle(id, LocalDateTime.now(), directionComingIn, endArm, spawnLane, bus, ghgEmissions);
             lanes[spawnLane][LANE_LENGTH-1] = v;
         }
-        return false;
-    }
-    public Boolean spawnPedestrianGroup(int id, byte laneBeingCrossed){
         return false;
     }
     private Boolean armContainsBusLane(){
@@ -164,4 +170,24 @@ public class LaneObject {
         }
         return ALTERNATIVE_SOLUTION;
     }
+// ## END Spawning Vehicles ##
+
+// ## START Spawning Pedestrians ##
+public Boolean spawnPedestrianGroup(int id, byte numPeople){ 
+    PedestrianGroup pg = new PedestrianGroup(id, LocalDateTime.now(), numPeople);
+    pedestrianGroups.add(pg);
+    return true;
+}
+// ## END Spawning Pedestrians ##
+
+// ## START Pedestrian Movement ##
+public Boolean movePedestrians(){
+    // if cars stop at red light, they will be at row 1, not 0, 0 is the pedestrian crossing
+    for(PedestrianGroup item : pedestrianGroups){
+        // end the waiting time somehow without adding too much overhead
+    }
+    return false;
+    
+}
+// ## END Pedestrian Movement ##
 }
